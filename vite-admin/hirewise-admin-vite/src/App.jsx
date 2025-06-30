@@ -1,10 +1,12 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import RegistrationPage from './components/Components/RegistrationPage';
 import AdminApp from './components/AdminLayout';
+import CombinedMultiStepForm from './components/Components/MultiStepForm/CombinedMultiStepForm';
 import './App.css';
 import React, { useState, useEffect } from 'react';
 
 function App() {
+<<<<<<< Updated upstream
   const [backendData, setBackendData] = useState(null);
 
   useEffect(() => {
@@ -37,6 +39,16 @@ function App() {
         <Route path="/admin/*" element={<AdminApp />} />
       </Routes>
     </>
+=======
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/register" replace />} />
+      <Route path="/register" element={<RegistrationPage />} />
+      <Route path="/application" element={<CombinedMultiStepForm />} />
+      {/* Parent route with nested child routes inside AdminApp layout */}
+      <Route path="/admin/*" element={<AdminApp />} />
+    </Routes>
+>>>>>>> Stashed changes
   );
 }
 

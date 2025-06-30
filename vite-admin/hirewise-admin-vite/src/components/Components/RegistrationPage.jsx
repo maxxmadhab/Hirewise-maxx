@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import "./RegistrationPage.css";
 
 const bulletIcons = [
@@ -28,6 +29,7 @@ const RegistrationPage = ({ onRegistrationSuccess, onLoginSuccess }) => {
   const [fieldErrors, setFieldErrors] = useState({}); // For field-specific errors (object)
   const [generalFormError, setGeneralFormError] = useState(""); // For general form errors (string)
   const [showLogin, setShowLogin] = useState(false);
+  const navigate = useNavigate();
 
   // Validation
   const validate = {
@@ -99,7 +101,7 @@ const RegistrationPage = ({ onRegistrationSuccess, onLoginSuccess }) => {
 
     if (isRegistrationFormValid) {
       console.log('Registering:', form);
-      onRegistrationSuccess();
+      navigate('/application');
     } else {
       setGeneralFormError('Please fill in all required fields correctly');
     }
