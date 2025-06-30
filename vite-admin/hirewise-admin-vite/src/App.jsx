@@ -21,7 +21,7 @@ function App() {
 
   return (
     <>
-      <div>
+      {/* <div>
         {!backendData || !backendData.users ? (
           <p>Loading...</p>
         ) : (
@@ -29,7 +29,7 @@ function App() {
             <p key={i}>{user}</p>
           ))
         )}
-      </div>
+      </div> */}
 
       <Routes>
         <Route path="/" element={<Navigate to="/register" replace />} />
