@@ -1190,6 +1190,35 @@ const CombinedMultiStepForm = () => {
       setCurrentStep(currentStep - 1);
     }
   };
+  const handleSubmit = async () => {
+  // Remove files (for now, we are not uploading them)
+  const dataToSubmit = { ...formData };
+  delete dataToSubmit.coverLetter;
+  delete dataToSubmit.teachingStatement;
+  delete dataToSubmit.researchStatement;
+  delete dataToSubmit.publications;
+  delete dataToSubmit.otherPublications;
+
+  try {
+    const res = await fetch('http://localhost:5000/api/applications', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dataToSubmit)
+    });
+
+    if (!res.ok) throw new Error('Failed to submit');
+
+    const result = await res.json();
+    alert('✅ Application submitted successfully!');
+    console.log('Server response:', result);
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    alert('❌ Failed to submit application.');
+  }
+};
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -1203,7 +1232,8 @@ const CombinedMultiStepForm = () => {
       case 5:
         return <ResearchInformation formData={formData} setFormData={setFormData} onNext={handleNext} onPrevious={handlePrevious} />;
       case 6:
-        return <Documentation formData={formData} setFormData={setFormData} onPrevious={handlePrevious} onSubmit={() => {}} />;
+       return <Documentation formData={formData} setFormData={setFormData} onPrevious={handlePrevious} onSubmit={handleSubmit} />;
+
       default:
         return null;
     }
