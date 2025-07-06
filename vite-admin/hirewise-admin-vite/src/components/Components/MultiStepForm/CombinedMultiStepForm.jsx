@@ -1079,23 +1079,20 @@ const Documentation = ({ formData, setFormData, onPrevious, onSubmit }) => {
     <form>
       <h2>Upload Documents</h2>
       
-      <div className="form-field">
-        <label>Resume *</label>
-        <input type="file" onChange={(e) => handleFileChange(e, 'resumePath')} />
-      </div>
+      
 
       <div className="form-field">
-        <label>Cover Letter *</label>
+        <label>Cover Letter </label>
         <input type="file" onChange={(e) => handleFileChange(e, 'coverLetterPath')} />
       </div>
 
       <div className="form-field">
-        <label>Teaching Statement</label>
+        <label>Teaching Statement *</label>
         <input type="file" onChange={(e) => handleFileChange(e, 'teachingStatement')} />
       </div>
 
       <div className="form-field">
-        <label>Research Statement</label>
+        <label>Research Statement *</label>
         <input type="file" onChange={(e) => handleFileChange(e, 'researchStatement')} />
       </div>
 
@@ -1105,18 +1102,18 @@ const Documentation = ({ formData, setFormData, onPrevious, onSubmit }) => {
       </div>
 
       <div className="form-field">
-        <label>Other Supporting Documents</label>
+        <label>Top 3 Published Papers(1 compiled pdf)*</label>
         <input type="file" onChange={(e) => handleFileChange(e, 'otherPublications')} />
       </div>
 
-      <div className="form-buttons">
-        <button type="button" className="btn btn-secondary" onClick={onPrevious}>
-          Previous
-        </button>
-        <button type="button" className="btn btn-primary" onClick={onSubmit}>
-          Submit Application
-        </button>
-      </div>
+      <div className="flex justify-between items-center mt-4">
+  <button type="button" className="btn btn-secondary" onClick={onPrevious}>
+    Previous
+  </button>
+  <button type="button" className="btn btn-primary" onClick={onSubmit}>
+    Submit Application
+  </button>
+</div>
     </form>
   );
 };
