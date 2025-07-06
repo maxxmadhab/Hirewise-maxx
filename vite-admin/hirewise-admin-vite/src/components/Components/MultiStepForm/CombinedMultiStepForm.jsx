@@ -475,7 +475,7 @@ const EducationDetails = ({ formData, setFormData, onNext, onPrevious }) => {
         <div className="form-field">
           <label htmlFor="bachelorYear">Passing Year*</label>
           <input
-            type="text"
+            type="number"
             id="bachelorYear"
             name="bachelorYear"
             value={formData.bachelorYear || ''}
@@ -486,7 +486,7 @@ const EducationDetails = ({ formData, setFormData, onNext, onPrevious }) => {
         <div className="form-field">
           <label htmlFor="bachelorCgpa">Percentage/CGPA*</label>
           <input
-            type="text"
+            type="number"
             id="bachelorCgpa"
             name="bachelorCgpa"
             value={formData.bachelorCgpa || ''}
@@ -523,7 +523,7 @@ const EducationDetails = ({ formData, setFormData, onNext, onPrevious }) => {
         <div className="form-field">
           <label htmlFor="masterYear">Passing Year*</label>
           <input
-            type="text"
+            type="number"
             id="masterYear"
             name="masterYear"
             value={formData.masterYear || ''}
@@ -534,7 +534,7 @@ const EducationDetails = ({ formData, setFormData, onNext, onPrevious }) => {
         <div className="form-field">
           <label htmlFor="masterCgpa">Percentage/CGPA*</label>
           <input
-            type="text"
+            type="number"
             id="masterCgpa"
             name="masterCgpa"
             value={formData.masterCgpa || ''}
@@ -586,7 +586,7 @@ const EducationDetails = ({ formData, setFormData, onNext, onPrevious }) => {
           <div className="form-field">
             <label htmlFor="phdYear">{formData.phdStatus === 'Pursuing' ? 'Pursuing Year*' : 'Passing Year*'}</label>
             <input
-              type="text"
+              type="number"
               id="phdYear"
               name="phdYear"
               value={formData.phdYear || ''}
