@@ -10,7 +10,8 @@ router.post('/', async (req, res) => {
     position,
     department,
     branch,
-    full_name,
+    first_name,
+    last_name,
     email,
     phone,
     address,
@@ -22,30 +23,40 @@ router.post('/', async (req, res) => {
     publications,
     resume_path,
     cover_letter_path,
+    gender,
+    date_of_birth,
+    nationality,
     teachingExperiences,
     researchExperiences,
     researchInfo
   } = req.body;
+
+  // Validate required fields
+  if (!first_name || !last_name || !email || !phone || !gender || !date_of_birth || !nationality) {
+    return res.status(400).json({ error: 'Missing required personal information fields' });
+  }
 
   try {
     // Step 1: Insert into faculty_applications
     const { rows } = await db.query(
       `INSERT INTO faculty_applications (
         position, department, branch,
-        full_name, email, phone, address,
+        first_name, last_name, email, phone, address,
         highest_degree, university, graduation_year,
         previous_positions, years_of_experience,
-        publications, resume_path, cover_letter_path
+        publications, resume_path, cover_letter_path,
+        gender, date_of_birth, nationality
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7,
-        $8, $9, $10, $11, $12, $13,
-        $14, $15
+        $1, $2, $3, $4, $5, $6, $7, $8,
+        $9, $10, $11, $12, $13, $14,
+        $15, $16, $17, $18, $19
       ) RETURNING *`,
       [
         position,
         department,
         branch,
-        full_name,
+        first_name,
+        last_name,
         email,
         phone,
         address,
@@ -56,15 +67,20 @@ router.post('/', async (req, res) => {
         years_of_experience,
         publications,
         resume_path,
-        cover_letter_path
+        cover_letter_path,
+        gender,
+        date_of_birth,
+        nationality
       ]
     );
 
     const application = rows[0];
     const applicationId = application.id;
 
-    // ✅ Step 2: Insert teaching experiences (renamed keys)
-    if (Array.isArray(teachingExperiences)) {
+    console.log('✅ Inserted application with ID:', applicationId);
+
+    // Step 2: Insert teaching experiences
+    if (Array.isArray(teachingExperiences) && teachingExperiences.length > 0) {
       for (const t of teachingExperiences) {
         await db.query(
           `INSERT INTO teaching_experiences (
@@ -80,10 +96,11 @@ router.post('/', async (req, res) => {
           ]
         );
       }
+      console.log('✅ Teaching experiences saved.');
     }
 
-    // ✅ Step 3: Insert research experiences (renamed keys)
-    if (Array.isArray(researchExperiences)) {
+    // Step 3: Insert research experiences
+    if (Array.isArray(researchExperiences) && researchExperiences.length > 0) {
       for (const r of researchExperiences) {
         await db.query(
           `INSERT INTO research_experiences (
@@ -99,9 +116,10 @@ router.post('/', async (req, res) => {
           ]
         );
       }
+      console.log('✅ Research experiences saved.');
     }
 
-    // ✅ Step 4: Insert research_info
+    // Step 4: Insert research_info
     if (researchInfo) {
       const {
         scopus_id,
@@ -128,12 +146,13 @@ router.post('/', async (req, res) => {
           edited_books
         ]
       );
+      console.log('✅ Research info saved.');
     }
 
-    res.status(201).json({ message: '✅ Application and all related data submitted!', application });
+    res.status(201).json({ message: '✅ Application submitted successfully!', application });
   } catch (err) {
-    console.error('❌ Error submitting application:', err);
-    res.status(500).json({ error: 'Failed to submit application' });
+    console.error('❌ Database error:', err);
+    res.status(500).json({ error: err.message || 'Failed to submit application' });
   }
 });
 

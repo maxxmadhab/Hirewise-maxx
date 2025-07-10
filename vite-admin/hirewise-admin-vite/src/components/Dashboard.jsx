@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Users, Eye, CheckCircle, XCircle, User, Building, ChevronDown, Filter, X } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Charts from './charts'; // Adjust path as needed
+
+
+
+import StatsCardsClient from './stats-cardclient';
 
 const Dashboard = () => {
   const [selectedView, setSelectedView] = useState('teaching');
@@ -11,7 +16,6 @@ const Dashboard = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [schoolFilter, setSchoolFilter] = useState('All');
   const [isSchoolFilterOpen, setIsSchoolFilterOpen] = useState(false);
-
 
   // Remove default margins from body and html
   useEffect(() => {
@@ -29,26 +33,26 @@ const Dashboard = () => {
     };
   }, []);
 
-  // Teaching data
-const teachingData = {
-  stats: {
-    total: 279,
-    inReview: 134,
-    shortlisted: 89,
-    rejected: 56
-  },
-  genderData: [
-    { name: 'Male', value: 68, color: '#3B82F6' },
-    { name: 'Female', value: 32, color: '#EC4899' }
-  ],
-  departmentData: [
-    { name: 'SOET', applications: 120 },
-    { name: 'SOM', applications: 85 },
-    { name: 'SOL', applications: 45 },
-    { name: 'SOLS', applications: 29 }
-  ],
-  topCandidates: [
-   { 
+  //Teaching data
+  const teachingData = {
+    // stats: {
+    //   total: 279,
+    //   inReview: 134,
+    //   shortlisted: 89,
+    //   rejected: 56
+    // },
+    genderData: [
+      { name: 'Male', value: 68, color: '#3B82F6' },
+      { name: 'Female', value: 32, color: '#EC4899' }
+    ],
+    departmentData: [
+      { name: 'SOET', applications: 120 },
+      { name: 'SOM', applications: 85 },
+      { name: 'SOL', applications: 45 },
+      { name: 'SOLS', applications: 29 }
+    ],
+    topCandidates: [
+       { 
       rank: 1, 
       name: 'Dr. Rajesh Kumar', 
       positionApplied: 'Professor',
@@ -198,33 +202,33 @@ const teachingData = {
       specialization: 'Applied Mathematics', 
       publications: 25 
     }
-  ]
-};
+    ]
+  };
 
-// Non-Teaching data (with institution added)
-const nonTeachingData = {
-  stats: {
-    total: 45,
-    inReview: 22,
-    shortlisted: 15,
-    rejected: 8
-  },
-  genderData: [
-    { name: 'Male', value: 58, color: '#3B82F6' },
-    { name: 'Female', value: 42, color: '#EC4899' }
-  ],
-  departmentData: [
-    { name: 'Administration', applications: 18 },
-    { name: 'Technical Support', applications: 12 },
-    { name: 'Library', applications: 8 },
-    { name: 'Lab Assistant', applications: 7 }
-  ],
-  topCandidates: [
-    { rank: 1, name: 'Ms. Sneha Patel', department: 'Administration', institution: 'Delhi University', score: 92.7, email: 'sneha.patel@email.com', phone: '+91-9876543220', experience: '5 years', qualification: 'MBA in Administration', specialization: 'Human Resources', certifications: 'HR Management, Payroll Systems' },
-    { rank: 2, name: 'Mr. Rohit Kumar', department: 'Technical Support', institution: 'IP University', score: 91.4, email: 'rohit.kumar@email.com', phone: '+91-9876543221', experience: '4 years', qualification: 'B.Tech in IT', specialization: 'Network Administration', certifications: 'CCNA, CompTIA Network+' },
-    // ... rest of non-teaching candidates with institution added
-  ]
-};
+  // Non-Teaching data (with institution added)
+  const nonTeachingData = {
+    stats: {
+      total: 45,
+      inReview: 22,
+      shortlisted: 15,
+      rejected: 8
+    },
+    genderData: [
+      { name: 'Male', value: 58, color: '#3B82F6' },
+      { name: 'Female', value: 42, color: '#EC4899' }
+    ],
+    departmentData: [
+      { name: 'Administration', applications: 18 },
+      { name: 'Technical Support', applications: 12 },
+      { name: 'Library', applications: 8 },
+      { name: 'Lab Assistant', applications: 7 }
+    ],
+    topCandidates: [
+      { rank: 1, name: 'Ms. Sneha Patel', department: 'Administration', institution: 'Delhi University', score: 92.7, email: 'sneha.patel@email.com', phone: '+91-9876543220', experience: '5 years', qualification: 'MBA in Administration', specialization: 'Human Resources', certifications: 'HR Management, Payroll Systems' },
+      { rank: 2, name: 'Mr. Rohit Kumar', department: 'Technical Support', institution: 'IP University', score: 91.4, email: 'rohit.kumar@email.com', phone: '+91-9876543221', experience: '4 years', qualification: 'B.Tech in IT', specialization: 'Network Administration', certifications: 'CCNA, CompTIA Network+' },
+      // ... rest of non-teaching candidates with institution added
+    ]
+  };
 
   const currentData = selectedView === 'teaching' ? teachingData : nonTeachingData;
 
@@ -235,19 +239,19 @@ const nonTeachingData = {
   };
 
   // Filter candidates based on selected department
-const getFilteredCandidates = () => {
-  let filtered = currentData.topCandidates;
-  
-  if (departmentFilter !== 'All') {
-    filtered = filtered.filter(candidate => candidate.department === departmentFilter);
-  }
-  
-  if (schoolFilter !== 'All') {
-    filtered = filtered.filter(candidate => candidate.school === schoolFilter);
-  }
-  
-  return filtered;
-};
+  const getFilteredCandidates = () => {
+    let filtered = currentData.topCandidates;
+    
+    if (departmentFilter !== 'All') {
+      filtered = filtered.filter(candidate => candidate.department === departmentFilter);
+    }
+    
+    if (schoolFilter !== 'All') {
+      filtered = filtered.filter(candidate => candidate.school === schoolFilter);
+    }
+    
+    return filtered;
+  };
 
   const filteredCandidates = getFilteredCandidates();
 
@@ -256,29 +260,30 @@ const getFilteredCandidates = () => {
     // Add your navigation logic here
   };
 
-const handleViewChange = (view) => {
-  setSelectedView(view);
-  setIsDropdownOpen(false);
-  setDepartmentFilter('All');
-  setSchoolFilter('All');
-};
+  const handleViewChange = (view) => {
+    setSelectedView(view);
+    setIsDropdownOpen(false);
+    setDepartmentFilter('All');
+    setSchoolFilter('All');
+  };
+
   const handleDepartmentFilterChange = (department) => {
     setDepartmentFilter(department);
     setIsDepartmentFilterOpen(false);
   };
 
+  //Total application count,inreview, shortlisted value
+  
   // here is the code for school filter
   const getSchoolFilterOptions = () => {
-  const schools = [...new Set(currentData.topCandidates.map(candidate => candidate.school))];
-  return ['All', ...schools];
-};
-const handleSchoolFilterChange = (school) => {
-  setSchoolFilter(school);
-  setIsSchoolFilterOpen(false);
-};
-
-
-
+    const schools = [...new Set(currentData.topCandidates.map(candidate => candidate.school))];
+    return ['All', ...schools];
+  };
+  
+  const handleSchoolFilterChange = (school) => {
+    setSchoolFilter(school);
+    setIsSchoolFilterOpen(false);
+  };
 
   const openCandidatePopup = (candidate) => {
     setSelectedCandidate(candidate);
@@ -357,200 +362,51 @@ const handleSchoolFilterChange = (school) => {
       </div>
 
       {/* Main Content - Scrollable */}
-     <div className="h-full overflow-y-auto">
-      <div className="px-6 py-4 space-y-4">
-      {/* Stats Cards */}
-     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-  {/* Total Applications Card */}
-  <div 
-    className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-100 cursor-pointer 
-    shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-    onClick={() => handleCardClick('total-applications')}
-  >
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm font-medium text-blue-600">Total Applications</p>
-        <p className="text-2xl font-bold text-blue-900 mt-1">{currentData.stats.total}</p>
-      </div>
-      <div className="p-3 rounded-lg bg-blue-100 shadow-inner">
-        <Users className="h-6 w-6 text-blue-600" />
-      </div>
-    </div>
-  </div>
-
-  {/* In Review Card */}
-  <div 
-    className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-6 border border-amber-100 cursor-pointer 
-    shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-    onClick={() => handleCardClick('in-review')}
-  >
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm font-medium text-amber-600">In Review</p>
-        <p className="text-2xl font-bold text-amber-900 mt-1">{currentData.stats.inReview}</p>
-      </div>
-      <div className="p-3 rounded-lg bg-amber-100 shadow-inner">
-        <Eye className="h-6 w-6 text-amber-600" />
-      </div>
-    </div>
-  </div>
-
-  {/* Shortlisted Card */}
-  <div 
-    className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-100 cursor-pointer 
-    shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-    onClick={() => handleCardClick('shortlisted')}
-  >
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm font-medium text-green-600">Shortlisted</p>
-        <p className="text-2xl font-bold text-green-900 mt-1">{currentData.stats.shortlisted}</p>
-      </div>
-      <div className="p-3 rounded-lg bg-green-100 shadow-inner">
-        <CheckCircle className="h-6 w-6 text-green-600" />
-      </div>
-    </div>
-  </div>
-
-  {/* Rejected Card */}
-  <div 
-    className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border border-red-100 cursor-pointer 
-    shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-    onClick={() => handleCardClick('rejected')}
-  >
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm font-medium text-red-600">Rejected</p>
-        <p className="text-2xl font-bold text-red-900 mt-1">{currentData.stats.rejected}</p>
-      </div>
-      <div className="p-3 rounded-lg bg-red-100 shadow-inner">
-        <XCircle className="h-6 w-6 text-red-600" />
-      </div>
-    </div>
-  </div>
-</div>
-  
-
-          {/* Charts Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Gender Distribution Pie Chart */}
-            <div className="bg-white rounded-lg shadow-sm p-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                <User className="h-5 w-5 mr-2" />
-                Gender Distribution 
-              </h2>
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={currentData.genderData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={70}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {currentData.genderData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Department Applications Bar Chart */}
-            <div className="bg-white rounded-lg shadow-sm p-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                <Building className="h-5 w-5 mr-2" />
-                Applications by {selectedView === 'teaching' ? 'Department' : 'Category'}
-              </h2>
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={currentData.departmentData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="applications" fill="#3B82F6" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-
-          {/* Top 10 Selected Candidates */}
-          <div className="bg-white rounded-lg shadow-sm p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Top 10 Selected Candidates 
-              </h2>
-
-              {/* {School filter} */}
-              <div className="flex gap-4">
-  
-
-  {/* New school filter */}
-  <div className="relative">
-    <button
-      onClick={() => setIsSchoolFilterOpen(!isSchoolFilterOpen)}
-      className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-    >
-      <Filter className="h-4 w-4" />
-      <span className="text-sm font-medium">
-        {schoolFilter === 'All' ? 'All Schools' : schoolFilter}
-      </span>
-      <ChevronDown className={`h-4 w-4 transition-transform ${isSchoolFilterOpen ? 'rotate-180' : ''}`} />
-    </button>
-    
-    {isSchoolFilterOpen && (
-      <div className="absolute top-full right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border z-50">
-        <div className="py-1">
-          {getSchoolFilterOptions().map((option) => (
-            <button
-              key={option}
-              onClick={() => handleSchoolFilterChange(option)}
-              className={`w-full text-left px-4 py-2 hover:bg-gray-50 ${
-                schoolFilter === option ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
-              }`}
-            >
-              {option === 'All' ? 'All Schools' : option}
-            </button>
-          ))}
+      <div className="h-full overflow-y-auto">
+        <div className="px-6 py-4 space-y-4">
+          {/* Stats Cards */}
+          <StatsCardsClient />
         </div>
-      </div>
-    )}
-  </div>
-</div>
-              
-              {/* Department Filter */}
+
+        {/* Charts Section */}
+        
+           <Charts />
+
+
+        {/* Top 10 Selected Candidates */}
+        <div className="bg-white rounded-lg shadow-sm p-4 mx-6 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Top 10 Selected Candidates 
+            </h2>
+
+            {/* School filter */}
+            <div className="flex gap-4">
+              {/* New school filter */}
               <div className="relative">
                 <button
-                  onClick={() => setIsDepartmentFilterOpen(!isDepartmentFilterOpen)}
+                  onClick={() => setIsSchoolFilterOpen(!isSchoolFilterOpen)}
                   className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   <Filter className="h-4 w-4" />
                   <span className="text-sm font-medium">
-                    {departmentFilter === 'All' ? 'All Departments' : departmentFilter}
+                    {schoolFilter === 'All' ? 'All Schools' : schoolFilter}
                   </span>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${isDepartmentFilterOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isSchoolFilterOpen ? 'rotate-180' : ''}`} />
                 </button>
                 
-                {isDepartmentFilterOpen && (
+                {isSchoolFilterOpen && (
                   <div className="absolute top-full right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border z-50">
                     <div className="py-1">
-                      {getFilterOptions().map((option) => (
+                      {getSchoolFilterOptions().map((option) => (
                         <button
                           key={option}
-                          onClick={() => handleDepartmentFilterChange(option)}
+                          onClick={() => handleSchoolFilterChange(option)}
                           className={`w-full text-left px-4 py-2 hover:bg-gray-50 ${
-                            departmentFilter === option ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                            schoolFilter === option ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
                           }`}
                         >
-                          {option === 'All' ? 'All Departments' : option}
+                          {option === 'All' ? 'All Schools' : option}
                         </button>
                       ))}
                     </div>
@@ -559,55 +415,87 @@ const handleSchoolFilterChange = (school) => {
               </div>
             </div>
             
-            <div className="overflow-x-auto">
-  <table className="w-full">
-    <thead>
-      <tr className="border-b border-gray-200">
-        <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">Rank</th>
-        <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">Name</th>
-        <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">Position Applied</th> {/* New Column */}
-        <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">School</th>
-        <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">
-          {selectedView === 'teaching' ? 'Department' : 'Category'}
-        </th>
-        <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">Score</th>
-        <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {filteredCandidates.map((candidate) => (
-        <tr key={candidate.rank} className="border-b border-gray-100 hover:bg-gray-50">
-          <td className="py-2 px-2">
-            <div className="flex items-center">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
-                candidate.rank <= 3 ? 'bg-gold' : 'bg-gray-400'
-              } ${candidate.rank === 1 ? 'bg-yellow-500' : candidate.rank === 2 ? 'bg-gray-400' : candidate.rank === 3 ? 'bg-amber-600' : ''}`}>
-                {candidate.rank}
-              </div>
+            {/* Department Filter */}
+            <div className="relative">
+              <button
+                onClick={() => setIsDepartmentFilterOpen(!isDepartmentFilterOpen)}
+                className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <Filter className="h-4 w-4" />
+                <span className="text-sm font-medium">
+                  {departmentFilter === 'All' ? 'All Departments' : departmentFilter}
+                </span>
+                <ChevronDown className={`h-4 w-4 transition-transform ${isDepartmentFilterOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {isDepartmentFilterOpen && (
+                <div className="absolute top-full right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border z-50">
+                  <div className="py-1">
+                    {getFilterOptions().map((option) => (
+                      <button
+                        key={option}
+                        onClick={() => handleDepartmentFilterChange(option)}
+                        className={`w-full text-left px-4 py-2 hover:bg-gray-50 ${
+                          departmentFilter === option ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                        }`}
+                      >
+                        {option === 'All' ? 'All Departments' : option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          </td>
-          <td className="py-2 px-2 text-sm font-medium text-gray-900">{candidate.name}</td>
-          <td className="py-2 px-2 text-sm text-gray-700">{candidate.positionApplied}</td> {/* New Column Data */}
-          <td className="py-2 px-2 text-sm text-gray-700">{candidate.school}</td>
-          <td className="py-2 px-2">
-            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getDepartmentColor(candidate.department)}`}>
-              {candidate.department}
-            </span>
-          </td>
-          <td className="py-2 px-2 text-sm font-bold text-gray-900">{candidate.score}</td>
-          <td className="py-2 px-2">
-            <button
-              onClick={() => openCandidatePopup(candidate)}
-              className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-colors"
-            >
-              View
-            </button>
-          </td>
-        </tr>
-      ))}
-</tbody>
-              </table>
-            </div>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">Rank</th>
+                  <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">Name</th>
+                  <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">Position Applied</th>
+                  <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">School</th>
+                  <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">
+                    {selectedView === 'teaching' ? 'Department' : 'Category'}
+                  </th>
+                  <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">Score</th>
+                  <th className="text-left py-2 px-2 text-sm font-medium text-gray-700">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCandidates.map((candidate) => (
+                  <tr key={candidate.rank} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className="py-2 px-2">
+                      <div className="flex items-center">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
+                          candidate.rank <= 3 ? 'bg-gold' : 'bg-gray-400'
+                        } ${candidate.rank === 1 ? 'bg-yellow-500' : candidate.rank === 2 ? 'bg-gray-400' : candidate.rank === 3 ? 'bg-amber-600' : ''}`}>
+                          {candidate.rank}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-2 px-2 text-sm font-medium text-gray-900">{candidate.name}</td>
+                    <td className="py-2 px-2 text-sm text-gray-700">{candidate.positionApplied}</td>
+                    <td className="py-2 px-2 text-sm text-gray-700">{candidate.school}</td>
+                    <td className="py-2 px-2">
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getDepartmentColor(candidate.department)}`}>
+                        {candidate.department}
+                      </span>
+                    </td>
+                    <td className="py-2 px-2 text-sm font-bold text-gray-900">{candidate.score}</td>
+                    <td className="py-2 px-2">
+                      <button
+                        onClick={() => openCandidatePopup(candidate)}
+                        className="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-colors"
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -629,122 +517,122 @@ const handleSchoolFilterChange = (school) => {
       )}
 
       {/* Candidate Details Popup */}
-  {isPopupOpen && selectedCandidate && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-      {/* Close button only in top-right corner */}
-      <button
-        onClick={closeCandidatePopup}
-        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
-      >
-        <X className="h-6 w-6" />
-      </button>
-      
-      <div className="p-6 space-y-6">
-        {/* Line 1: Rank and Name */}
-        <div className="flex items-center gap-4 pt-2">
-          <div className="flex-shrink-0">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white ${
-              selectedCandidate.rank <= 3 ? 'bg-gold' : 'bg-gray-400'
-            } ${selectedCandidate.rank === 1 ? 'bg-yellow-500' : selectedCandidate.rank === 2 ? 'bg-gray-400' : selectedCandidate.rank === 3 ? 'bg-amber-600' : ''}`}>
-              {selectedCandidate.rank}
+      {isPopupOpen && selectedCandidate && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Close button only in top-right corner */}
+            <button
+              onClick={closeCandidatePopup}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            
+            <div className="p-6 space-y-6">
+              {/* Line 1: Rank and Name */}
+              <div className="flex items-center gap-4 pt-2">
+                <div className="flex-shrink-0">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white ${
+                    selectedCandidate.rank <= 3 ? 'bg-gold' : 'bg-gray-400'
+                  } ${selectedCandidate.rank === 1 ? 'bg-yellow-500' : selectedCandidate.rank === 2 ? 'bg-gray-400' : selectedCandidate.rank === 3 ? 'bg-amber-600' : ''}`}>
+                    {selectedCandidate.rank}
+                  </div>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">{selectedCandidate.name}</h2>
+                </div>
+              </div>
+
+              {/* Line 2: Institution */}
+              <div>
+                <p className="text-sm font-bold text-gray-800 mb-1">INSTITUTION</p>
+                <p className="text-base font-normal text-gray-500">{selectedCandidate.institution || "Not specified"}</p>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-100 my-4"></div>
+
+              {/* Rest of the details in grid layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <p className="text-sm font-bold text-gray-800 mb-1">POSITION APPLIED</p>
+                  <p className="text-base font-normal text-gray-500">{selectedCandidate.positionApplied}</p>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-bold text-gray-800 mb-1">SCHOOL</p>
+                  <p className="text-base font-normal text-gray-500">{selectedCandidate.school}</p>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-bold text-gray-800 mb-1">
+                    {selectedView === 'teaching' ? 'DEPARTMENT' : 'CATEGORY'}
+                  </p>
+                  <span className={`inline-flex px-3 py-1 text-sm font-normal rounded-full ${getDepartmentColor(selectedCandidate.department)}`}>
+                    {selectedCandidate.department}
+                  </span>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-bold text-gray-800 mb-1">SCORE</p>
+                  <p className="text-base font-normal text-gray-500">{selectedCandidate.score}</p>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-bold text-gray-800 mb-1">EMAIL</p>
+                  <p className="text-base font-normal text-gray-500">{selectedCandidate.email}</p>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-bold text-gray-800 mb-1">PHONE</p>
+                  <p className="text-base font-normal text-gray-500">{selectedCandidate.phone}</p>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-bold text-gray-800 mb-1">EXPERIENCE</p>
+                  <p className="text-base font-normal text-gray-500">{selectedCandidate.experience}</p>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-bold text-gray-800 mb-1">QUALIFICATION</p>
+                  <p className="text-base font-normal text-gray-500">{selectedCandidate.qualification}</p>
+                </div>
+              </div>
+
+              {/* Full width fields */}
+              <div>
+                <p className="text-sm font-bold text-gray-800 mb-1">SPECIALIZATION</p>
+                <p className="text-base font-normal text-gray-500">{selectedCandidate.specialization}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm font-bold text-gray-800 mb-1">
+                  {selectedView === 'teaching' ? 'PUBLICATIONS' : 'CERTIFICATIONS'}
+                </p>
+                <p className="text-base font-normal text-gray-500">
+                  {selectedView === 'teaching' ? selectedCandidate.publications : selectedCandidate.certifications}
+                </p>
+              </div>
+            </div>
+            
+            {/* Action buttons */}
+            <div className="flex justify-end gap-3 p-6 border-t bg-gray-50 sticky bottom-0">
+              <button
+                onClick={closeCandidatePopup}
+                className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => console.log('Contact candidate:', selectedCandidate.name)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Contact Candidate
+              </button>
             </div>
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">{selectedCandidate.name}</h2>
-          </div>
         </div>
-
-        {/* Line 2: Institution */}
-        <div>
-          <p className="text-sm font-bold text-gray-800 mb-1">INSTITUTION</p>
-          <p className="text-base font-normal text-gray-500">{selectedCandidate.institution || "Not specified"}</p>
-        </div>
-
-        {/* Divider */}
-        <div className="border-t border-gray-100 my-4"></div>
-
-        {/* Rest of the details in grid layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <p className="text-sm font-bold text-gray-800 mb-1">POSITION APPLIED</p>
-            <p className="text-base font-normal text-gray-500">{selectedCandidate.positionApplied}</p>
-          </div>
-          
-          <div>
-            <p className="text-sm font-bold text-gray-800 mb-1">SCHOOL</p>
-            <p className="text-base font-normal text-gray-500">{selectedCandidate.school}</p>
-          </div>
-          
-          <div>
-            <p className="text-sm font-bold text-gray-800 mb-1">
-              {selectedView === 'teaching' ? 'DEPARTMENT' : 'CATEGORY'}
-            </p>
-            <span className={`inline-flex px-3 py-1 text-sm font-normal rounded-full ${getDepartmentColor(selectedCandidate.department)}`}>
-              {selectedCandidate.department}
-            </span>
-          </div>
-          
-          <div>
-            <p className="text-sm font-bold text-gray-800 mb-1">SCORE</p>
-            <p className="text-base font-normal text-gray-500">{selectedCandidate.score}</p>
-          </div>
-          
-          <div>
-            <p className="text-sm font-bold text-gray-800 mb-1">EMAIL</p>
-            <p className="text-base font-normal text-gray-500">{selectedCandidate.email}</p>
-          </div>
-          
-          <div>
-            <p className="text-sm font-bold text-gray-800 mb-1">PHONE</p>
-            <p className="text-base font-normal text-gray-500">{selectedCandidate.phone}</p>
-          </div>
-          
-          <div>
-            <p className="text-sm font-bold text-gray-800 mb-1">EXPERIENCE</p>
-            <p className="text-base font-normal text-gray-500">{selectedCandidate.experience}</p>
-          </div>
-          
-          <div>
-            <p className="text-sm font-bold text-gray-800 mb-1">QUALIFICATION</p>
-            <p className="text-base font-normal text-gray-500">{selectedCandidate.qualification}</p>
-          </div>
-        </div>
-
-        {/* Full width fields */}
-        <div>
-          <p className="text-sm font-bold text-gray-800 mb-1">SPECIALIZATION</p>
-          <p className="text-base font-normal text-gray-500">{selectedCandidate.specialization}</p>
-        </div>
-        
-        <div>
-          <p className="text-sm font-bold text-gray-800 mb-1">
-            {selectedView === 'teaching' ? 'PUBLICATIONS' : 'CERTIFICATIONS'}
-          </p>
-          <p className="text-base font-normal text-gray-500">
-            {selectedView === 'teaching' ? selectedCandidate.publications : selectedCandidate.certifications}
-          </p>
-        </div>
-      </div>
-      
-      {/* Action buttons */}
-      <div className="flex justify-end gap-3 p-6 border-t bg-gray-50 sticky bottom-0">
-        <button
-          onClick={closeCandidatePopup}
-          className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-        >
-          Close
-        </button>
-        <button
-          onClick={() => console.log('Contact candidate:', selectedCandidate.name)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-        >
-          Contact Candidate
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 };

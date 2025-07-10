@@ -1156,21 +1156,25 @@ const CombinedMultiStepForm = () => {
  const onSubmitFinalApplication = async () => {
   const formattedSubmission = {
     // Faculty application core details
-    position: formData.position || '',
-    department: formData.department || '',
-    branch: formData.branch || '',
-    full_name: formData.fullName || '',
-    email: formData.email || '',
-    phone: formData.phone || '',
-    address: formData.address || '',
-    highest_degree: formData.highest_degree || '',
-    university: formData.university || '',
-    graduation_year: formData.graduation_year || '',
-    previous_positions: formData.previous_positions || '', // Changed from stringified array
-    years_of_experience: formData.totalExperience || '',
-    publications: formData.publications || '', // Changed from stringified array
-    resume_path: formData.resume_path || null,
-    cover_letter_path: formData.cover_letter_path || null,
+   position: formData.position || '',
+  department: formData.department || '',
+  branch: formData.branch || '',
+  first_name: formData.firstName || '',       // Changed from full_name
+  last_name: formData.lastName || '',        // New
+  email: formData.email || '',
+  phone: formData.phone || '',
+  address: formData.address || '',
+  highest_degree: formData.highest_degree || '',
+  university: formData.university || '',
+  graduation_year: formData.graduation_year || '',
+  previous_positions: formData.previous_positions || '',
+  years_of_experience: formData.totalExperience || '',
+  publications: formData.publications || '',
+  resume_path: formData.resume_path || null,
+  cover_letter_path: formData.cover_letter_path || null,
+  gender: formData.gender || '',             // New
+  date_of_birth: formData.dateOfBirth || '', // New (ensure format is YYYY-MM-DD)
+  nationality: formData.nationality || ''  ,
 
     // Teaching experiences (array of objects)
     teachingExperiences: (formData.teachingExperiences || []).map(t => ({
