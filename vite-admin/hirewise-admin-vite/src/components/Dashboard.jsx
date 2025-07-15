@@ -16,6 +16,9 @@ const Dashboard = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [schoolFilter, setSchoolFilter] = useState('All');
   const [isSchoolFilterOpen, setIsSchoolFilterOpen] = useState(false);
+  const [isPositionFilterOpen, setIsPositionFilterOpen] = useState(false);
+  const [positionFilter, setPositionFilter] = useState('All');
+  
 
   // Remove default margins from body and html
   useEffect(() => {
@@ -201,6 +204,21 @@ const Dashboard = () => {
       qualification: 'Ph.D in Mathematics', 
       specialization: 'Applied Mathematics', 
       publications: 25 
+    },
+       { 
+      rank: 11, 
+      name: 'Prof. Deepika Singh', 
+      positionApplied: 'Associate Proffesor',
+      school: 'SOLS', 
+      department: 'Mathematics',
+      institution: 'ISI Kolkata',  // Added institution
+      score: 88.2, 
+      email: 'deepika.singh@email.com', 
+      phone: '+91-9876543219', 
+      experience: '13 years', 
+      qualification: 'Ph.D in Mathematics', 
+      specialization: 'Applied Mathematics', 
+      publications: 25 
     }
     ]
   };
@@ -239,20 +257,26 @@ const Dashboard = () => {
   };
 
   // Filter candidates based on selected department
-  const getFilteredCandidates = () => {
-    let filtered = currentData.topCandidates;
-    
-    if (departmentFilter !== 'All') {
-      filtered = filtered.filter(candidate => candidate.department === departmentFilter);
-    }
-    
-    if (schoolFilter !== 'All') {
-      filtered = filtered.filter(candidate => candidate.school === schoolFilter);
-    }
-    
-    return filtered;
-  };
-
+const getFilteredCandidates = () => {
+  let filtered = currentData.topCandidates;
+  
+  // Department filter (existing)
+  if (departmentFilter !== 'All') {
+    filtered = filtered.filter(candidate => candidate.department === departmentFilter);
+  }
+  
+  // School filter (existing)
+  if (schoolFilter !== 'All') {
+    filtered = filtered.filter(candidate => candidate.school === schoolFilter);
+  }
+  
+  // New position filter
+  if (positionFilter !== 'All') {
+    filtered = filtered.filter(candidate => candidate.positionApplied === positionFilter);
+  }
+  
+  return filtered;
+};
   const filteredCandidates = getFilteredCandidates();
 
   const handleCardClick = (type) => {
@@ -284,6 +308,31 @@ const Dashboard = () => {
     setSchoolFilter(school);
     setIsSchoolFilterOpen(false);
   };
+
+
+  //code for PositionApplied filter
+const getPositionFilterOptions = () => {
+  if (!currentData?.topCandidates) return ['All'];
+  
+  // Extract all unique positions from data
+  const allPositions = [...new Set(currentData.topCandidates.map(c => c.positionApplied))];
+  
+  // Define the order you want positions to appear
+  const orderedPositions = [
+    'Professor',
+    'Assistant Professor', 
+    'Associate Officer',
+    // Add any other positions you want to specifically include
+  ];
+  
+  // Combine ordered positions with any others found in data
+  const positions = [
+    ...orderedPositions.filter(pos => allPositions.includes(pos)),
+    ...allPositions.filter(pos => !orderedPositions.includes(pos))
+  ];
+  
+  return ['All', ...positions];
+};
 
   const openCandidatePopup = (candidate) => {
     setSelectedCandidate(candidate);
@@ -379,6 +428,40 @@ const Dashboard = () => {
             <h2 className="text-lg font-semibold text-gray-900">
               Top 10 Selected Candidates 
             </h2>
+{/* Position Filter */}
+<div className="relative">
+  <button
+    onClick={() => setIsPositionFilterOpen(!isPositionFilterOpen)}
+    className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+  >
+    <Filter className="h-4 w-4" />
+    <span className="text-sm font-medium">
+      {positionFilter === 'All' ? 'All Positions' : positionFilter}
+    </span>
+    <ChevronDown className={`h-4 w-4 transition-transform ${isPositionFilterOpen ? 'rotate-180' : ''}`} />
+  </button>
+  
+  {isPositionFilterOpen && (
+    <div className="absolute top-full right-0 mt-1 w-56 bg-white rounded-lg shadow-lg border z-50 max-h-60 overflow-y-auto">
+      <div className="py-1">
+        {getPositionFilterOptions().map((option) => (
+          <button
+            key={option}
+            onClick={() => {
+              setPositionFilter(option);
+              setIsPositionFilterOpen(false);
+            }}
+            className={`w-full text-left px-4 py-2 hover:bg-gray-50 ${
+              positionFilter === option ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
 
             {/* School filter */}
             <div className="flex gap-4">
@@ -414,6 +497,7 @@ const Dashboard = () => {
                 )}
               </div>
             </div>
+
             
             {/* Department Filter */}
             <div className="relative">
@@ -545,7 +629,7 @@ const Dashboard = () => {
 
               {/* Line 2: Institution */}
               <div>
-                <p className="text-sm font-bold text-gray-800 mb-1">INSTITUTION</p>
+                <p className="text-sm font-bold text-gray-800 mb-1">PHD INSTITUTION</p>
                 <p className="text-base font-normal text-gray-500">{selectedCandidate.institution || "Not specified"}</p>
               </div>
 
