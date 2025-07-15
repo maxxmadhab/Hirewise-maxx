@@ -102,7 +102,6 @@ const PositionSelection = ({ formData, setFormData, onNext }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Position Selection</h2>
       <div className="form-field">
         <label htmlFor="position">Position Applying For*</label>
         <select
@@ -242,7 +241,6 @@ const PersonalInformation = ({ formData, setFormData, onNext, onPrevious }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Applicant Information</h2>
       <div className="form-fields-row">
         <div className="form-field">
           <label htmlFor="firstName">First Name*</label>
@@ -269,26 +267,28 @@ const PersonalInformation = ({ formData, setFormData, onNext, onPrevious }) => {
           {errors.lastName && <span className="error">{errors.lastName}</span>}
         </div>
       </div>
-      <div className="form-field">
-        <label htmlFor="email">Email*</label>
-        <input
-          type="email"
-          id="email"
-          value={formData.email || ''}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        />
-        {errors.email && <span className="error">{errors.email}</span>}
-      </div>
-      <div className="form-field">
-        <label htmlFor="phone">Phone Number*</label>
-        <input
-          type="tel"
-          id="phone"
-          value={formData.phone || ''}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          maxLength={10}
-        />
-        {errors.phone && <span className="error">{errors.phone}</span>}
+      <div className="form-fields-row">
+        <div className="form-field">
+          <label htmlFor="email">Email*</label>
+          <input
+            type="email"
+            id="email"
+            value={formData.email || ''}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          />
+          {errors.email && <span className="error">{errors.email}</span>}
+        </div>
+        <div className="form-field">
+          <label htmlFor="phone">Phone Number*</label>
+          <input
+            type="tel"
+            id="phone"
+            value={formData.phone || ''}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            maxLength={10}
+          />
+          {errors.phone && <span className="error">{errors.phone}</span>}
+        </div>
       </div>
       <div className="form-field">
         <label>Gender*</label>
@@ -326,25 +326,27 @@ const PersonalInformation = ({ formData, setFormData, onNext, onPrevious }) => {
         </div>
         {errors.gender && <span className="error">{errors.gender}</span>}
       </div>
-      <div className="form-field">
-        <label htmlFor="dateOfBirth">Date of Birth*</label>
-        <input
-          type="date"
-          id="dateOfBirth"
-          value={formData.dateOfBirth || ''}
-          onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-        />
-        {errors.dateOfBirth && <span className="error">{errors.dateOfBirth}</span>}
-      </div>
-      <div className="form-field">
-        <label htmlFor="nationality">Nationality*</label>
-        <input
-          type="text"
-          id="nationality"
-          value={formData.nationality || ''}
-          onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
-        />
-        {errors.nationality && <span className="error">{errors.nationality}</span>}
+      <div className="form-fields-row">
+        <div className="form-field">
+          <label htmlFor="dateOfBirth">Date of Birth*</label>
+          <input
+            type="date"
+            id="dateOfBirth"
+            value={formData.dateOfBirth || ''}
+            onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+          />
+          {errors.dateOfBirth && <span className="error">{errors.dateOfBirth}</span>}
+        </div>
+        <div className="form-field">
+          <label htmlFor="nationality">Nationality*</label>
+          <input
+            type="text"
+            id="nationality"
+            value={formData.nationality || ''}
+            onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+          />
+          {errors.nationality && <span className="error">{errors.nationality}</span>}
+        </div>
       </div>
       <div className="form-buttons">
         <div style={{flex: 1}}>
@@ -446,7 +448,6 @@ const EducationDetails = ({ formData, setFormData, onNext, onPrevious }) => {
   };
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Education Details</h2>
       {/* Bachelor's Degree Information */}
       <h3 className="degree-section-title">Bachelor's Degree</h3>
       <div className="degree-fields-row">
@@ -707,14 +708,7 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
   };
   const validateForm = () => {
     const newErrors = { teaching: [], research: [] };
-    (formData.teachingExperiences || []).forEach((exp, idx) => {
-      const entryErrors = {};
-      if (!exp.teachingPost) entryErrors.teachingPost = 'Teaching post is required';
-      if (!exp.teachingInstitution) entryErrors.teachingInstitution = 'Institution/University is required';
-      if (!exp.teachingStartDate) entryErrors.teachingStartDate = 'Start date is required';
-      if (!exp.teachingEndDate) entryErrors.teachingEndDate = 'End date is required';
-      newErrors.teaching[idx] = entryErrors;
-    });
+    // Only validate research experience as required
     (formData.researchExperiences || []).forEach((exp, idx) => {
       const entryErrors = {};
       if (!exp.researchPost) entryErrors.researchPost = 'Research post is required';
@@ -724,9 +718,9 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
       newErrors.research[idx] = entryErrors;
     });
     setErrors(newErrors);
-    const hasTeachingErrors = newErrors.teaching.some(e => Object.keys(e).length > 0);
+    // Only research errors are considered for blocking submit
     const hasResearchErrors = newErrors.research.some(e => Object.keys(e).length > 0);
-    return !(hasTeachingErrors || hasResearchErrors);
+    return !hasResearchErrors;
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -736,7 +730,6 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
   };
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Work Experience</h2>
       {/* Teaching Experience Section */}
       <h3 className="degree-section-title">Teaching Experience</h3>
       {(formData.teachingExperiences || []).map((exp, idx) => (
@@ -754,7 +747,7 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
             </button>
           )}
           <div className="form-field">
-            <label htmlFor={`teachingPost${idx}`}>Post*</label>
+            <label htmlFor={`teachingPost${idx}`}>Post</label>
             <select
               id={`teachingPost${idx}`}
               name="teachingPost"
@@ -762,7 +755,6 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
               onChange={e => handleTeachingChange(idx, e)}
             >
               <option value="">Select Post</option>
-              <option value="Lecturer">Lecturer</option>
               <option value="Assistant Professor">Assistant Professor</option>
               <option value="Associate Professor">Associate Professor</option>
               <option value="Professor">Professor</option>
@@ -772,7 +764,7 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
             )}
           </div>
           <div className="form-field">
-            <label htmlFor={`teachingInstitution${idx}`}>Institution/University*</label>
+            <label htmlFor={`teachingInstitution${idx}`}>Institution/University</label>
             <input
               type="text"
               id={`teachingInstitution${idx}`}
@@ -785,7 +777,7 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
             )}
           </div>
           <div className="form-field">
-            <label htmlFor={`teachingStartDate${idx}`}>Start Date*</label>
+            <label htmlFor={`teachingStartDate${idx}`}>Start Date</label>
             <input
               type="date"
               id={`teachingStartDate${idx}`}
@@ -798,7 +790,7 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
             )}
           </div>
           <div className="form-field">
-            <label htmlFor={`teachingEndDate${idx}`}>End Date*</label>
+            <label htmlFor={`teachingEndDate${idx}`}>End Date</label>
             <input
               type="date"
               id={`teachingEndDate${idx}`}
@@ -951,7 +943,6 @@ const ResearchInformation = ({ formData, setFormData, onNext, onPrevious, onSubm
   const validateForm = () => {
     const newErrors = {};
     if (!formData.scopusId) newErrors.scopusId = 'Scopus ID is required';
-    if (!formData.scopusIndexCount) newErrors.scopusIndexCount = 'Orchid ID is required';
     if (!formData.googleScholarId) newErrors.googleScholarId = 'Google Scholar ID is required';
     if (!formData.temp1) newErrors.temp1 = 'No. of Scopus Index General Papers is required';
     if (!formData.temp2) newErrors.temp2 = 'No. of Scopus Index Conference Papers is required';
@@ -971,7 +962,6 @@ const ResearchInformation = ({ formData, setFormData, onNext, onPrevious, onSubm
   };
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Research Information</h2>
       <div className="form-fields-row">
         <div className="form-field">
           <label htmlFor="scopusId">Scopus ID*</label>
@@ -985,7 +975,7 @@ const ResearchInformation = ({ formData, setFormData, onNext, onPrevious, onSubm
           {errors.scopusId && <span className="error">{errors.scopusId}</span>}
         </div>
         <div className="form-field">
-          <label htmlFor="scopusIndexCount">Orchid ID*</label>
+          <label htmlFor="scopusIndexCount">Orchid ID</label>
           <input
             type="text"
             id="scopusIndexCount"
@@ -1077,7 +1067,6 @@ const Documentation = ({ formData, setFormData, onPrevious, onSubmit }) => {
 
   return (
     <form>
-      <h2>Upload Documents</h2>
       
       
 
