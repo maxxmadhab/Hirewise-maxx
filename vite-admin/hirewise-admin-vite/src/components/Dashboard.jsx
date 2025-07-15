@@ -364,7 +364,7 @@ const getPositionFilterOptions = () => {
   };
 
   return (
-    <div className="h-screen bg-gray-50 overflow-hidden w-full">
+    <div className="min-h-screen bg-gray-50 w-full flex flex-col">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="px-6 py-3 flex items-center justify-between">
@@ -411,8 +411,8 @@ const getPositionFilterOptions = () => {
       </div>
 
       {/* Main Content - Scrollable */}
-      <div className="h-full overflow-y-auto">
-        <div className="px-6 py-4 space-y-4">
+     <div className="flex-1 overflow-y-auto">
+  <div className="p-4 space-y-4">
           {/* Stats Cards */}
           <StatsCardsClient />
         </div>
@@ -423,7 +423,7 @@ const getPositionFilterOptions = () => {
 
 
         {/* Top 10 Selected Candidates */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mx-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm p-4 mb-4 mx-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold text-gray-900">
               Top 10 Selected Candidates 
