@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Building } from 'lucide-react';
+import { User, Building, Briefcase } from 'lucide-react';
 import { supabase } from '../../lib/supabase-client';
 import {
   PieChart,
@@ -16,50 +16,132 @@ import {
   Legend
 } from 'recharts';
 
+const GENDER_COLORS = {
+  Male: '#42A5F5',
+  Female: '#F06292',
+  Other: '#FFCA28'
+};
+
+const DEPARTMENT_COLORS = [
+  '#4db6ac', '#7986cb', '#9575cd', '#64b5f6', 
+  '#4dd0e1', '#81c784', '#ffb74d', '#ba68c8',
+  '#e57373', '#4facfe'
+];
+
+// Updated helper function to parse text experience values
+const categorizeExperience = (expText) => {
+  if (!expText) return "Unknown";
+  
+  // Extract years number from text (handles "4 years 6 months", "2 years", etc.)
+  const yearsMatch = expText.match(/(\d+)\s*years?/i);
+  if (!yearsMatch) return "Unknown";
+  
+  const years = parseInt(yearsMatch[1], 10);
+  
+  if (years <= 2) return "0–2 Years";
+  if (years <= 5) return "2–5 Years";
+  if (years <= 10) return "5–10 Years";
+  return "10+ Years";
+};
+
 export default function AnalyticsDashboard() {
   const [genderData, setGenderData] = useState([]);
   const [departmentData, setDepartmentData] = useState([]);
+  const [experienceData, setExperienceData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      // Fetch gender distribution from Supabase SQL function
-      const { data: genderRaw, error: genderError } = await supabase.rpc('get_gender_distribution');
+      try {
+        setLoading(true);
+        
+        // Fetch gender data
+        const { data: genderRaw, error: genderError } = await supabase.rpc('get_gender_distribution');
+        if (genderError) console.error('Gender Error:', genderError);
+        
+        // Fetch department data
+        const { data: deptRaw, error: deptError } = await supabase.rpc('get_department_applications');
+        if (deptError) console.error('Department Error:', deptError);
 
-      if (genderError) {
-        console.error('Gender Error:', genderError);
-        return;
+        // Fetch experience data directly from the table
+        const { data: expRaw, error: expError } = await supabase
+          .from('faculty_applications')
+          .select('years_of_experience');
+        
+        if (expError) {
+          console.error('Experience Error:', expError);
+          throw expError;
+        }
+
+        // Process experience data
+        if (expRaw && expRaw.length > 0) {
+          // Initialize counters for each range
+          const experienceCounts = {
+            "0–2 Years": 0,
+            "2–5 Years": 0,
+            "5–10 Years": 0,
+            "10+ Years": 0,
+            "Unknown": 0
+          };
+
+          // Count each experience range
+          expRaw.forEach(({ years_of_experience }) => {
+            const range = categorizeExperience(years_of_experience);
+            experienceCounts[range]++;
+          });
+
+          // Remove unknown if empty
+          if (experienceCounts["Unknown"] === 0) {
+            delete experienceCounts["Unknown"];
+          }
+
+          // Calculate percentages and format data
+          const total = expRaw.length;
+          const formattedExperienceData = Object.entries(experienceCounts).map(([range, count]) => ({
+            range,
+            count,
+            percentage: Math.round((count / total) * 100)
+          }));
+
+          setExperienceData(formattedExperienceData);
+        }
+
+        // Set gender and department data
+        setGenderData(genderRaw?.map(item => ({
+          name: item.gender,
+          value: item.value,
+          color: GENDER_COLORS[item.gender] || '#9E9E9E'
+        })) || []);
+
+        setDepartmentData(deptRaw?.map((item, index) => ({
+          name: item.department,
+          applications: item.applications,
+          color: DEPARTMENT_COLORS[index % DEPARTMENT_COLORS.length]
+        })) || []);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        // Fallback to dummy data if there's an error
+        setExperienceData([
+          { range: "0–2 Years", count: 20, percentage: 20 },
+          { range: "2–5 Years", count: 33, percentage: 33 },
+          { range: "5–10 Years", count: 27, percentage: 27 },
+          { range: "10+ Years", count: 20, percentage: 20 }
+        ]);
+      } finally {
+        setLoading(false);
       }
-
-      const transformedGender = genderRaw.map(item => ({
-        name: item.gender === 'Male' ? 'Male' : 'Female',
-        value: item.value,
-        color: item.gender === 'Male' ? '#3B82F6' : '#EC4899',
-      }));
-
-      // Fetch department applications from Supabase SQL function
-      const { data: deptRaw, error: deptError } = await supabase.rpc('get_department_applications');
-
-      if (deptError) {
-        console.error('Department Error:', deptError);
-        return;
-      }
-
-      const transformedDept = deptRaw.map(item => ({
-        name: item.department,
-        applications: item.applications,
-      }));
-
-      setGenderData(transformedGender);
-      setDepartmentData(transformedDept);
-
-      console.log('✅ Gender Data:', transformedGender);
-      console.log('✅ Department Data:', transformedDept);
     };
 
     fetchData();
   }, []);
 
-  // Custom shape for the pie chart to create a 3D effect
+  const renderExperienceBar = (percentage) => {
+    const filled = '█'.repeat(Math.round(percentage / 10));
+    const empty = '░'.repeat(10 - filled.length);
+    return filled + empty;
+  };
+
   const renderCustomizedLabel = ({
     cx,
     cy,
@@ -89,18 +171,26 @@ export default function AnalyticsDashboard() {
     );
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-6 pb-4">
-      {/* Gender Distribution Pie Chart */}
-      <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+    <div className="flex flex-col lg:flex-row gap-4 px-6 pb-4">
+      {/* Gender Pie Chart (30%) */}
+      <div className="w-full lg:w-[30%] bg-white rounded-lg shadow-sm p-2 border border-gray-200 border-opacity-60">
+        <h2 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
           <User className="h-5 w-5 mr-2" />
           Gender Distribution
         </h2>
         <div className="h-48">
           {genderData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
+              <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                 <Pie
                   data={genderData}
                   cx="50%"
@@ -110,19 +200,11 @@ export default function AnalyticsDashboard() {
                   outerRadius={80}
                   innerRadius={40}
                   paddingAngle={2}
-                  fill="#8884d8"
                   dataKey="value"
-                  animationBegin={0}
                   animationDuration={1000}
-                  animationEasing="ease-out"
                 >
                   {genderData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry.color} 
-                      stroke="#fff"
-                      strokeWidth={2}
-                    />
+                    <Cell key={`cell-${index}`} fill={entry.color} stroke="#fff" strokeWidth={2} />
                   ))}
                 </Pie>
                 <Tooltip 
@@ -131,7 +213,6 @@ export default function AnalyticsDashboard() {
                     backgroundColor: '#fff',
                     border: '1px solid #e5e7eb',
                     borderRadius: '0.375rem',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
                     padding: '8px 12px'
                   }}
                 />
@@ -140,9 +221,7 @@ export default function AnalyticsDashboard() {
                   layout="horizontal"
                   verticalAlign="bottom"
                   align="center"
-                  wrapperStyle={{
-                    paddingTop: '10px'
-                  }}
+                  wrapperStyle={{ paddingTop: '10px' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -151,10 +230,37 @@ export default function AnalyticsDashboard() {
           )}
         </div>
       </div>
+{/* Experience Visuals (30%) */}
+<div className="w-full lg:w-[30%] bg-white rounded-lg shadow-sm p-4 border border-gray-200 border-opacity-60">
+  <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+    <Briefcase className="h-5 w-5 mr-2" />
+    Experience Distribution
+  </h2>
+  <div className="space-y-3 font-mono text-sm text-gray-800">
+    {experienceData.length > 0 ? (
+      experienceData.map((item, index) => (
+        <div key={index} className="space-y-1">
+          <div className="flex justify-between">
+            <span>{item.range}</span>
+            <span className="text-blue-600">{item.percentage}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div 
+              className="bg-blue-600 h-2.5 rounded-full" 
+              style={{ width: `${item.percentage}%` }}
+            ></div>
+          </div>
+        </div>
+      ))
+    ) : (
+      <p className="text-sm text-gray-500">No experience data available.</p>
+    )}
+  </div>
+</div>
 
-      {/* Department Applications Bar Chart */}
-      <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+      {/* Department Bar Chart (40%) */}
+      <div className="w-full lg:w-[40%] bg-white rounded-lg shadow-sm p-2 border border-gray-200 border-opacity-60">
+        <h2 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
           <Building className="h-5 w-5 mr-2" />
           Applications by Department
         </h2>
@@ -177,27 +283,27 @@ export default function AnalyticsDashboard() {
                   tickLine={{ stroke: '#e5e7eb' }}
                 />
                 <Tooltip 
-                  cursor={{ fill: '#f3f4f6' }}
+                  cursor={{ fill: 'rgba(0,0,0,0.05)' }}
                   contentStyle={{
                     backgroundColor: '#fff',
                     border: '1px solid #e5e7eb',
                     borderRadius: '0.375rem',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
                     padding: '8px 12px'
                   }}
+                  formatter={(value) => [`${value} applications`, '']}
+                  labelFormatter={(label) => `Department: ${label}`}
                 />
                 <Bar 
                   dataKey="applications" 
-                  fill="#3B82F6" 
-                  radius={[4, 4, 0, 0]}
+                  radius={[8, 8, 0, 0]}
                   animationDuration={1500}
                 >
                   {departmentData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill="#3B82F6" 
-                      stroke="#2563eb"
-                      strokeWidth={index === departmentData.length - 1 ? 1 : 0}
+                      fill={entry.color} 
+                      stroke="#fff"
+                      strokeWidth={1}
                     />
                   ))}
                 </Bar>

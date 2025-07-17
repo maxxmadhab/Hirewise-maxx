@@ -52,57 +52,57 @@ export default function StatsCardsClient() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {/* Total Applications */}
-      <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-100 cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-blue-600">Total Applications</p>
-            <p className="text-2xl font-bold text-blue-900 mt-1">{stats.total}</p>
-          </div>
-          <div className="p-3 rounded-lg bg-blue-100 shadow-inner">
-            <Users className="h-6 w-6 text-blue-600" />
-          </div>
-        </div>
+  {/* Total Applications */}
+  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-100/50 cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm backdrop-filter bg-opacity-80">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-sm font-medium text-blue-600">Total Applications</p>
+        <p className="text-2xl font-bold text-blue-900 mt-1">{stats.total}</p>
       </div>
-
-      {/* In Review */}
-      <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 border border-yellow-100 cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-yellow-600">In Review</p>
-            <p className="text-2xl font-bold text-yellow-900 mt-1">{stats.inReview}</p>
-          </div>
-          <div className="p-3 rounded-lg bg-yellow-100 shadow-inner">
-            <Eye className="h-6 w-6 text-yellow-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Shortlisted */}
-      <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-100 cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-green-600">Shortlisted</p>
-            <p className="text-2xl font-bold text-green-900 mt-1">{stats.shortlisted}</p>
-          </div>
-          <div className="p-3 rounded-lg bg-green-100 shadow-inner">
-            <CheckCircle className="h-6 w-6 text-green-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Rejected */}
-      <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border border-red-100 cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-red-600">Rejected</p>
-            <p className="text-2xl font-bold text-red-900 mt-1">{stats.rejected}</p>
-          </div>
-          <div className="p-3 rounded-lg bg-red-100 shadow-inner">
-            <XCircle className="h-6 w-6 text-red-600" />
-          </div>
-        </div>
+      <div className="p-3 rounded-lg bg-blue-100/70 shadow-inner">
+        <Users className="h-6 w-6 text-blue-600" />
       </div>
     </div>
+  </div>
+
+  {/* In Review */}
+  <div className="bg-[#fff3cd] rounded-xl p-6 border border-amber-100/50 cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm backdrop-filter bg-opacity-80">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-sm font-medium text-amber-600">In Review</p>
+        <p className="text-2xl font-bold text-amber-900 mt-1">{stats.inReview}</p>
+      </div>
+      <div className="p-3 rounded-lg bg-[#FFE082]/70 shadow-inner">
+        <Eye className="h-6 w-6 text-amber-600" />
+      </div>
+    </div>
+  </div>
+
+  {/* Shortlisted */}
+  <div className="bg-[#d4edda] rounded-xl p-6 border border-green-100/50 cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm backdrop-filter bg-opacity-80">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-sm font-medium text-green-600">Shortlisted</p>
+        <p className="text-2xl font-bold text-green-900 mt-1">{stats.shortlisted}</p>
+      </div>
+      <div className="p-3 rounded-lg bg-[#81C784]/70 shadow-inner">
+        <CheckCircle className="h-6 w-6 text-green-600" />
+      </div>
+    </div>
+  </div>
+
+  {/* Rejected */}
+  <div className="bg-[#f8d7da] rounded-xl p-6 border border-red-100/50 cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm backdrop-filter bg-opacity-80">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-sm font-medium text-red-600">Rejected</p>
+        <p className="text-2xl font-bold text-red-900 mt-1">{stats.rejected}</p>
+      </div>
+      <div className="p-3 rounded-lg bg-[#E57373]/70 shadow-inner">
+        <XCircle className="h-6 w-6 text-red-600" />
+      </div>
+    </div>
+  </div>
+</div>
   )
 }
