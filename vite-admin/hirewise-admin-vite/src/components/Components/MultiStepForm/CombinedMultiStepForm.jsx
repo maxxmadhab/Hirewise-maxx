@@ -711,19 +711,33 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
   };
   const validateForm = () => {
     const newErrors = { teaching: [], research: [] };
-    // Only validate research experience as required
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    // Teaching experience validation (optional, but check dates if present)
+    (formData.teachingExperiences || []).forEach((exp, idx) => {
+      const entryErrors = {};
+      if (exp.teachingStartDate && exp.teachingStartDate > today) {
+        entryErrors.teachingStartDate = 'Start date cannot be in the future';
+      }
+      if (exp.teachingEndDate && exp.teachingEndDate > today) {
+        entryErrors.teachingEndDate = 'End date cannot be in the future';
+      }
+      newErrors.teaching[idx] = entryErrors;
+    });
+    // Research experience validation (required, and check dates)
     (formData.researchExperiences || []).forEach((exp, idx) => {
       const entryErrors = {};
       if (!exp.researchPost) entryErrors.researchPost = 'Research post is required';
       if (!exp.researchInstitution) entryErrors.researchInstitution = 'Institution/University is required';
       if (!exp.researchStartDate) entryErrors.researchStartDate = 'Start date is required';
+      else if (exp.researchStartDate > today) entryErrors.researchStartDate = 'Start date cannot be in the future';
       if (!exp.researchEndDate) entryErrors.researchEndDate = 'End date is required';
+      else if (exp.researchEndDate > today) entryErrors.researchEndDate = 'End date cannot be in the future';
       newErrors.research[idx] = entryErrors;
     });
     setErrors(newErrors);
-    // Only research errors are considered for blocking submit
+    const hasTeachingErrors = newErrors.teaching.some(e => Object.keys(e).length > 0);
     const hasResearchErrors = newErrors.research.some(e => Object.keys(e).length > 0);
-    return !hasResearchErrors;
+    return !(hasTeachingErrors || hasResearchErrors);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -946,7 +960,16 @@ const ResearchInformation = ({ formData, setFormData, onNext, onPrevious, onSubm
   const validateForm = () => {
     const newErrors = {};
     if (!formData.scopusId) newErrors.scopusId = 'Scopus ID is required';
-    if (!formData.googleScholarId) newErrors.googleScholarId = 'Google Scholar ID is required';
+    if (!formData.googleScholarId) {
+      newErrors.googleScholarId = 'Google Scholar ID is required';
+    } else if (!/^[a-zA-Z0-9]{10,20}$/.test(formData.googleScholarId)) {
+      newErrors.googleScholarId = 'Google Scholar ID must be alphanumeric, e.g., YBxwE6gAAAAJ';
+    }
+    if (formData.scopusIndexCount) {
+      if (!/^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/.test(formData.scopusIndexCount)) {
+        newErrors.scopusIndexCount = 'ORCID ID must be in the format 0000-0001-5109-3700';
+      }
+    }
     if (!formData.temp1) newErrors.temp1 = 'No. of Scopus Index General Papers is required';
     if (!formData.temp2) newErrors.temp2 = 'No. of Scopus Index Conference Papers is required';
     if (!formData.temp3) newErrors.temp3 = 'No. of Edited Books is required';
