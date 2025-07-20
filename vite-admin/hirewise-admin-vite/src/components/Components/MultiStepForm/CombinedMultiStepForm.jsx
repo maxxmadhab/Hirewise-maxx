@@ -957,35 +957,44 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
 // Step 5: ResearchInformation
 const ResearchInformation = ({ formData, setFormData, onNext, onPrevious, onSubmit }) => {
   const [errors, setErrors] = useState({});
+
   const validateForm = () => {
     const newErrors = {};
+
     if (!formData.scopusId) newErrors.scopusId = 'Scopus ID is required';
+
     if (!formData.googleScholarId) {
       newErrors.googleScholarId = 'Google Scholar ID is required';
     } else if (!/^[a-zA-Z0-9]{10,20}$/.test(formData.googleScholarId)) {
       newErrors.googleScholarId = 'Google Scholar ID must be alphanumeric, e.g., YBxwE6gAAAAJ';
     }
-    if (formData.scopusIndexCount) {
-      if (!/^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/.test(formData.scopusIndexCount)) {
-        newErrors.scopusIndexCount = 'ORCID ID must be in the format 0000-0001-5109-3700';
+
+    if (formData.orchidId) {
+      if (!/^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/.test(formData.orchidId)) {
+        newErrors.orchidId = 'ORCID ID must be in the format 0000-0001-5109-3700';
       }
     }
-    if (!formData.temp1) newErrors.temp1 = 'No. of Scopus Index General Papers is required';
-    if (!formData.temp2) newErrors.temp2 = 'No. of Scopus Index Conference Papers is required';
-    if (!formData.temp3) newErrors.temp3 = 'No. of Edited Books is required';
+
+    if (formData.scopus_general_papers === '') newErrors.scopus_general_papers = 'No. of Scopus Index General Papers is required';
+    if (formData.conference_papers === '') newErrors.conference_papers = 'No. of Scopus Index Conference Papers is required';
+    if (formData.edited_books === '') newErrors.edited_books = 'No. of Edited Books is required';
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
       onNext();
     }
   };
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-fields-row">
@@ -1001,15 +1010,15 @@ const ResearchInformation = ({ formData, setFormData, onNext, onPrevious, onSubm
           {errors.scopusId && <span className="error">{errors.scopusId}</span>}
         </div>
         <div className="form-field">
-          <label htmlFor="scopusIndexCount">Orchid ID</label>
+          <label htmlFor="orchidId">ORCID ID</label>
           <input
             type="text"
-            id="scopusIndexCount"
-            name="scopusIndexCount"
-            value={formData.scopusIndexCount || ''}
+            id="orchidId"
+            name="orchidId"
+            value={formData.orchidId || ''}
             onChange={handleInputChange}
           />
-          {errors.scopusIndexCount && <span className="error">{errors.scopusIndexCount}</span>}
+          {errors.orchidId && <span className="error">{errors.orchidId}</span>}
         </div>
         <div className="form-field">
           <label htmlFor="googleScholarId">Google Scholar ID*</label>
@@ -1025,37 +1034,37 @@ const ResearchInformation = ({ formData, setFormData, onNext, onPrevious, onSubm
       </div>
       <div className="form-fields-row">
         <div className="form-field">
-          <label htmlFor="temp1">No. of Scopus Index General Papers*</label>
+          <label htmlFor="scopus_general_papers">No. of Scopus Index General Papers*</label>
           <input
             type="number"
-            id="temp1"
-            name="temp1"
-            value={formData.temp1 || ''}
+            id="scopus_general_papers"
+            name="scopus_general_papers"
+            value={formData.scopus_general_papers || ''}
             onChange={handleInputChange}
           />
-          {errors.temp1 && <span className="error">{errors.temp1}</span>}
+          {errors.scopus_general_papers && <span className="error">{errors.scopus_general_papers}</span>}
         </div>
         <div className="form-field">
-          <label htmlFor="temp2">No. of Scopus Index Conference Papers*</label>
+          <label htmlFor="conference_papers">No. of Scopus Index Conference Papers*</label>
           <input
             type="number"
-            id="temp2"
-            name="temp2"
-            value={formData.temp2 || ''}
+            id="conference_papers"
+            name="conference_papers"
+            value={formData.conference_papers || ''}
             onChange={handleInputChange}
           />
-          {errors.temp2 && <span className="error">{errors.temp2}</span>}
+          {errors.conference_papers && <span className="error">{errors.conference_papers}</span>}
         </div>
         <div className="form-field">
-          <label htmlFor="temp3">No. of Edited Books*</label>
+          <label htmlFor="edited_books">No. of Edited Books*</label>
           <input
             type="number"
-            id="temp3"
-            name="temp3"
-            value={formData.temp3 || ''}
+            id="edited_books"
+            name="edited_books"
+            value={formData.edited_books || ''}
             onChange={handleInputChange}
           />
-          {errors.temp3 && <span className="error">{errors.temp3}</span>}
+          {errors.edited_books && <span className="error">{errors.edited_books}</span>}
         </div>
       </div>
       <div className="form-buttons">
@@ -1081,6 +1090,7 @@ const ResearchInformation = ({ formData, setFormData, onNext, onPrevious, onSubm
     </form>
   );
 };
+
 
 // Step 6: Documentation
 const Documentation = ({ formData, setFormData, onPrevious, onSubmit }) => {
@@ -1218,7 +1228,9 @@ const { loading, error, full_name: fullName } = profile;
     }
   };
 
+
  const onSubmitFinalApplication = async () => {
+  
   const formattedSubmission = {
     // Faculty application core details
    position: formData.position || '',
@@ -1260,14 +1272,15 @@ const { loading, error, full_name: fullName } = profile;
     })),
 
     // Research Info (single object)
-    researchInfo: {
-      scopus_id: formData.scopusId || '',
-      orchid_id: formData.orchidId || '', // Changed from 'scopusIndexCount'
-      google_scholar_id: formData.googleScholarId || '',
-      scopus_general_papers: Number(formData.scopus_general_papers) || 0, // Changed from 'temp1'
-      conference_papers: Number(formData.conference_papers) || 0, // Changed from 'temp2'
-      edited_books: Number(formData.edited_books) || 0 // Changed from 'temp3'
-    }
+   researchInfo: {
+  scopus_id: formData.scopusId || '',
+  orchid_id: formData.orchidId || '', // previously scopusIndexCount
+  google_scholar_id: formData.googleScholarId || '',
+  scopus_general_papers: Number(formData.scopus_general_papers) || 0, // previously temp1
+  conference_papers: Number(formData.conference_papers) || 0,        // previously temp2
+  edited_books: Number(formData.edited_books) || 0                   // previously temp3
+}
+
   };
 
   try {
