@@ -1,5 +1,5 @@
 import express from 'express';
-import db from '../config/db.js';
+import supabase from '../config/db.js'; // Now using Supabase SDK
 
 const router = express.Router();
 
@@ -31,91 +31,82 @@ router.post('/', async (req, res) => {
     researchInfo
   } = req.body;
 
-  // Validate required fields
   if (!first_name || !last_name || !email || !phone || !gender || !date_of_birth || !nationality) {
     return res.status(400).json({ error: 'Missing required personal information fields' });
   }
 
   try {
     // Step 1: Insert into faculty_applications
-    const { rows } = await db.query(
-      `INSERT INTO faculty_applications (
-        position, department, branch,
-        first_name, last_name, email, phone, address,
-        highest_degree, university, graduation_year,
-        previous_positions, years_of_experience,
-        publications, resume_path, cover_letter_path,
-        gender, date_of_birth, nationality
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8,
-        $9, $10, $11, $12, $13, $14,
-        $15, $16, $17, $18, $19
-      ) RETURNING *`,
-      [
-        position,
-        department,
-        branch,
-        first_name,
-        last_name,
-        email,
-        phone,
-        address,
-        highest_degree,
-        university,
-        graduation_year,
-        previous_positions,
-        years_of_experience,
-        publications,
-        resume_path,
-        cover_letter_path,
-        gender,
-        date_of_birth,
-        nationality
-      ]
-    );
+    const { data: applicationData, error: appError } = await supabase
+      .from('faculty_applications')
+      .insert([
+        {
+          position,
+          department,
+          branch,
+          first_name,
+          last_name,
+          email,
+          phone,
+          address,
+          highest_degree,
+          university,
+          graduation_year,
+          previous_positions,
+          years_of_experience,
+          publications,
+          resume_path,
+          cover_letter_path,
+          gender,
+          date_of_birth,
+          nationality
+        }
+      ])
+      .select()
+      .single();
 
-    const application = rows[0];
-    const applicationId = application.id;
+    if (appError) throw appError;
 
+    const applicationId = applicationData.id;
     console.log('✅ Inserted application with ID:', applicationId);
 
     // Step 2: Insert teaching experiences
     if (Array.isArray(teachingExperiences) && teachingExperiences.length > 0) {
-      for (const t of teachingExperiences) {
-        await db.query(
-          `INSERT INTO teaching_experiences (
-            application_id, post, institution, start_date, end_date, experience
-          ) VALUES ($1, $2, $3, $4, $5, $6)`,
-          [
-            applicationId,
-            t.teachingPost,
-            t.teachingInstitution,
-            t.teachingStartDate,
-            t.teachingEndDate,
-            t.teachingExperience
-          ]
-        );
-      }
+      const teachingData = teachingExperiences.map(t => ({
+        application_id: applicationId,
+        post: t.teachingPost,
+        institution: t.teachingInstitution,
+        start_date: t.teachingStartDate,
+        end_date: t.teachingEndDate,
+        experience: t.teachingExperience
+      }));
+
+      const { error: teachingError } = await supabase
+        .from('teaching_experiences')
+        .insert(teachingData);
+
+      if (teachingError) throw teachingError;
+
       console.log('✅ Teaching experiences saved.');
     }
 
     // Step 3: Insert research experiences
     if (Array.isArray(researchExperiences) && researchExperiences.length > 0) {
-      for (const r of researchExperiences) {
-        await db.query(
-          `INSERT INTO research_experiences (
-            application_id, post, institution, start_date, end_date, experience
-          ) VALUES ($1, $2, $3, $4, $5, $6)`,
-          [
-            applicationId,
-            r.researchPost,
-            r.researchInstitution,
-            r.researchStartDate,
-            r.researchEndDate,
-            r.researchExperience
-          ]
-        );
-      }
+      const researchData = researchExperiences.map(r => ({
+        application_id: applicationId,
+        post: r.researchPost,
+        institution: r.researchInstitution,
+        start_date: r.researchStartDate,
+        end_date: r.researchEndDate,
+        experience: r.researchExperience
+      }));
+
+      const { error: researchError } = await supabase
+        .from('research_experiences')
+        .insert(researchData);
+
+      if (researchError) throw researchError;
+
       console.log('✅ Research experiences saved.');
     }
 
@@ -130,28 +121,28 @@ router.post('/', async (req, res) => {
         edited_books
       } = researchInfo;
 
-      await db.query(
-        `INSERT INTO research_info (
-          application_id, scopus_id, orchid_id,
-          google_scholar_id, scopus_general_papers,
-          conference_papers, edited_books
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [
-          applicationId,
-          scopus_id,
-          orchid_id,
-          google_scholar_id,
-          scopus_general_papers,
-          conference_papers,
-          edited_books
-        ]
-      );
+      const { error: infoError } = await supabase
+        .from('research_info')
+        .insert([
+          {
+            application_id: applicationId,
+            scopus_id,
+            orchid_id,
+            google_scholar_id,
+            scopus_general_papers,
+            conference_papers,
+            edited_books
+          }
+        ]);
+
+      if (infoError) throw infoError;
+
       console.log('✅ Research info saved.');
     }
 
-    res.status(201).json({ message: '✅ Application submitted successfully!', application });
+    res.status(201).json({ message: '✅ Application submitted successfully!', application: applicationData });
   } catch (err) {
-    console.error('❌ Database error:', err);
+    console.error('❌ Supabase error:', err.message || err);
     res.status(500).json({ error: err.message || 'Failed to submit application' });
   }
 });
