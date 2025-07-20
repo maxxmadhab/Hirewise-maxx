@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './MultiStepForm.css';
+import { supabase } from '../../../../lib/supabase-client';
 
 // Step 1: PositionSelection
 const PositionSelection = ({ formData, setFormData, onNext }) => {
@@ -77,6 +78,8 @@ const PositionSelection = ({ formData, setFormData, onNext }) => {
       setBranches([]);
     }
   }, [formData.department]);
+
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -1111,11 +1114,61 @@ const Documentation = ({ formData, setFormData, onPrevious, onSubmit }) => {
 // Main MultiStepForm
 const CombinedMultiStepForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  
+
   const [formData, setFormData] = useState({
     position: '',
     department: '',
     branch: '',
   });
+const [profile, setProfile] = useState({
+  full_name: '',
+  loading: true,
+  error: null
+});
+useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const {
+        data: { user },
+        error: userError
+      } = await supabase.auth.getUser();
+
+      if (userError) throw userError;
+      if (!user) throw new Error("User not authenticated");
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', user.id) // ✅ Correct column name for your case
+        .maybeSingle();
+
+      if (error) throw error;
+
+      setProfile({
+        full_name: data?.full_name || '',
+        loading: false,
+        error: null
+      });
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+      setProfile(prev => ({
+        ...prev,
+        loading: false,
+        error: err.message
+      }));
+    }
+  };
+
+  fetchProfile();
+}, []);
+
+
+
+
+const { loading, error, full_name: fullName } = profile;
+
+
   const [completedSteps, setCompletedSteps] = useState([]);
 
   const steps = [
@@ -1236,15 +1289,46 @@ const CombinedMultiStepForm = () => {
 
   return (
     <div className="multi-step-form">
-      <div className="form-header">
-        <div className="university-logo">
-          <img src="/image 2.png" alt="University Logo" style={{ width: '100%', height: 'auto' }} />
+    <div className="form-header" style={{
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between', // This creates space between left and right content
+  width: '100%',
+  padding: '0 20px', // Add horizontal padding
+}}>
+  {/* Left side - University info */}
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div className="university-logo" style={{ width: '60px', marginRight: '15px' }}>
+      <img src="/image 2.png" alt="University Logo" style={{ width: '100%', height: 'auto' }} />
+    </div>
+    <div className="university-info">
+      <div className="university-name" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>BML Munjal University</div>
+      <div className="recruitment-text" style={{ color: '#555' }}>Faculty Recruitment 2025</div>
+    </div>
+  </div>
+
+  {/* Right side - Welcome message */}
+  <div className="profile-display" style={{ marginLeft: 'auto' }}>
+    {loading ? (
+      <div>Loading...</div>
+    ) : error ? (
+      <div className="error">Error: {error}</div>
+    ) : (
+      fullName && (
+        <div className="user-name" style={{
+          fontWeight: '600',
+          fontSize: '1.1rem',
+          color: '#333',
+          fontFamily: 'Arial, sans-serif'
+        }}>
+          Welcome, <span style={{ fontWeight: '700', color: '#000' }}>{fullName}</span>
         </div>
-        <div className="university-info">
-          <div className="university-name">BML Munjal University</div>
-          <div className="recruitment-text">Faculty Recruitment 2025</div>
-        </div>
-      </div>
+      )
+    )}
+  </div>
+</div>
+
+
       <div className="form-progress">
         {steps.map((step) => {
           const isCompleted = completedSteps.includes(step.id);
