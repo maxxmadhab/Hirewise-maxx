@@ -1284,7 +1284,8 @@ const { loading, error, full_name: fullName } = profile;
   };
 
   try {
-    const response = await fetch('http://localhost:5000/api/applications', {
+    const BASE_URL = "https://hirewise-maxx-2.onrender.com"; // your backend on Render
+    const response = await fetch(BASE_URL + '/api/applications', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

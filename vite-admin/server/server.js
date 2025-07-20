@@ -5,7 +5,14 @@ import applicationsRoute from './routes/applications.js'; // <-- Make sure the p
 const app = express();
 
 // Middlewares
-app.use(cors());
+const allowedOrigins = ['https://hirewise-maxxf2.onrender.com']; // 👈 Replace with actual frontend URL
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
 app.use(express.json());
 
 // Test route

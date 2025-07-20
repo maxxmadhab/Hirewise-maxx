@@ -5,11 +5,13 @@ import AdminApp from './components/AdminLayout';
 import CombinedMultiStepForm from './components/Components/MultiStepForm/CombinedMultiStepForm';
 import './App.css';
 
+const BASE_URL = "https://hirewise-maxx-2.onrender.com"; // your backend on Render
+
 function App() {
   const [backendData, setBackendData] = useState(null);
 
   useEffect(() => {
-    fetch("/api")
+    fetch(BASE_URL + "/api")
       .then(response => response.json())
       .then(data => {
         console.log("Fetched from backend:", data);
