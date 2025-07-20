@@ -1337,16 +1337,29 @@ const { loading, error, full_name: fullName } = profile;
     ) : error ? (
       <div className="error">Error: {error}</div>
     ) : (
-      fullName && (
-        <div className="user-name" style={{
-          fontWeight: '600',
-          fontSize: '1.1rem',
-          color: '#333',
-          fontFamily: 'Arial, sans-serif'
-        }}>
-          Welcome, <span style={{ fontWeight: '700', color: '#000' }}>{fullName}</span>
-        </div>
-      )
+      <>
+        {fullName && (
+          <div className="user-name" style={{
+            fontWeight: '600',
+            fontSize: '1.1rem',
+            color: '#333',
+            fontFamily: 'Arial, sans-serif'
+          }}>
+            Welcome, <span style={{ fontWeight: '700', color: '#000' }}>{fullName}</span>
+          </div>
+        )}
+        {formData.position && (
+          <div className="user-position" style={{
+            fontWeight: '500',
+            fontSize: '1.05rem',
+            color: '#333', // Match form text color
+            marginTop: '2px',
+            fontFamily: 'Arial, sans-serif'
+          }}>
+            Position: <span style={{ fontWeight: '600' }}>{formData.position.charAt(0).toUpperCase() + formData.position.slice(1)}</span>
+          </div>
+        )}
+      </>
     )}
   </div>
 </div>
