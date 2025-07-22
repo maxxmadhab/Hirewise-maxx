@@ -365,16 +365,20 @@ const PersonalInformation = ({ formData, setFormData, onNext, onPrevious }) => {
           </button>
         </div>
         <div style={{flex: 1, display: 'flex', justifyContent: 'center'}}>
-          <button 
+         <button 
   type="button" 
   className="btn btn-secondary save-exit-btn"
   onClick={() => {
-    localStorage.removeItem('token'); // Clear auth token
-    window.location.href = '/register';  // Redirect to login page
+    localStorage.removeItem('token'); // Clear authentication token
+    window.location.href = '/register';  // Redirect to registration page
   }}
 >
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12.6667 4.66667V1.33333H3.33333V4.66667M8 8V14M8 14L5.33333 11.3333M8 14L10.6667 11.3333M1.33333 14.6667H14.6667V4.66667H1.33333V14.66667Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12.6667 4.66667V1.33333H3.33333V4.66667M8 8V14M8 14L5.33333 11.3333M8 14L10.6667 11.3333M1.33333 14.6667H14.6667V4.66667H1.33333V14.66667Z" 
+          stroke="currentColor" 
+          strokeWidth="1.5" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"/>
   </svg>
   Save & Exit
 </button>
@@ -632,16 +636,20 @@ const EducationDetails = ({ formData, setFormData, onNext, onPrevious }) => {
           </button>
         </div>
         <div style={{flex: 1, display: 'flex', justifyContent: 'center'}}>
-          <button 
+         <button 
   type="button" 
   className="btn btn-secondary save-exit-btn"
   onClick={() => {
-    localStorage.removeItem('token'); // Clear auth token
+    localStorage.removeItem('token'); // Clear authentication token
     window.location.href = '/register';  // Redirect to login page
   }}
 >
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12.6667 4.66667V1.33333H3.33333V4.66667M8 8V14M8 14L5.33333 11.3333M8 14L10.6667 11.3333M1.33333 14.6667H14.6667V4.66667H1.33333V14.66667Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12.6667 4.66667V1.33333H3.33333V4.66667M8 8V14M8 14L5.33333 11.3333M8 14L10.6667 11.3333M1.33333 14.6667H14.6667V4.66667H1.33333V14.66667Z" 
+          stroke="currentColor" 
+          strokeWidth="1.5" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"/>
   </svg>
   Save & Exit
 </button>
@@ -962,12 +970,16 @@ const Experience = ({ formData, setFormData, onNext, onPrevious }) => {
   type="button" 
   className="btn btn-secondary save-exit-btn"
   onClick={() => {
-    localStorage.removeItem('token'); // Clear auth token
-    window.location.href = '/register';  // Redirect to login page
+    localStorage.removeItem('token'); // Clear authentication token
+    window.location.href = '/register';  // Redirect to registration page
   }}
 >
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12.6667 4.66667V1.33333H3.33333V4.66667M8 8V14M8 14L5.33333 11.3333M8 14L10.6667 11.3333M1.33333 14.6667H14.6667V4.66667H1.33333V14.66667Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12.6667 4.66667V1.33333H3.33333V4.66667M8 8V14M8 14L5.33333 11.3333M8 14L10.6667 11.3333M1.33333 14.6667H14.6667V4.66667H1.33333V14.66667Z" 
+          stroke="currentColor" 
+          strokeWidth="1.5" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"/>
   </svg>
   Save & Exit
 </button>
@@ -1106,12 +1118,16 @@ const ResearchInformation = ({ formData, setFormData, onNext, onPrevious, onSubm
   type="button" 
   className="btn btn-secondary save-exit-btn"
   onClick={() => {
-    localStorage.removeItem('token'); // Clear auth token
+    localStorage.removeItem('token'); // Clear authentication token
     window.location.href = '/register';  // Redirect to login page
   }}
 >
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12.6667 4.66667V1.33333H3.33333V4.66667M8 8V14M8 14L5.33333 11.3333M8 14L10.6667 11.3333M1.33333 14.6667H14.6667V4.66667H1.33333V14.66667Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12.6667 4.66667V1.33333H3.33333V4.66667M8 8V14M8 14L5.33333 11.3333M8 14L10.6667 11.3333M1.33333 14.6667H14.6667V4.66667H1.33333V14.66667Z" 
+          stroke="currentColor" 
+          strokeWidth="1.5" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"/>
   </svg>
   Save & Exit
 </button>
