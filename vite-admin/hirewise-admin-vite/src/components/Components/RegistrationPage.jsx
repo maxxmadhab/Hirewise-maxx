@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import "./RegistrationPage.css";
 import { registerUser } from '../../lib/auth';
 import { loginUser } from '../../lib/auth';
+const [successMessage, setSuccessMessage] = useState("");
 
 const bulletIcons = [
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="9" fill="#0E76A8"/><path d="M5.5 9.5L8 12l4-4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
@@ -92,31 +93,38 @@ const RegistrationPage = ({ onRegistrationSuccess, onLoginSuccess }) => {
     fields.every((f) => !fieldErrors[f]);
 
   // Handle registration submit
-  const handleRegistrationSubmit = async (e) => {
-    e.preventDefault();
-    setGeneralFormError(""); // Clear any previous general form error
+const handleRegistrationSubmit = async (e) => {
+  e.preventDefault();
+  setGeneralFormError("");
+  setSuccessMessage(""); // Clear old message
 
-    if (form.password !== form.confirmPassword) {
-      setGeneralFormError('Passwords do not match');
-      return;
-    }
+  if (form.password !== form.confirmPassword) {
+    setGeneralFormError('Passwords do not match');
+    return;
+  }
 
-    if (isRegistrationFormValid) {
-      try {
-        await registerUser({
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          password: form.password
-        });
+  if (isRegistrationFormValid) {
+    try {
+      await registerUser({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        password: form.password
+      });
+
+      setSuccessMessage("🎉 Registration successful! **Now you can login.**");
+
+      setTimeout(() => {
         navigate('/application');
-      } catch (err) {
-        setGeneralFormError(err.message || 'Registration failed');
-      }
-    } else {
-      setGeneralFormError('Please fill in all required fields correctly');
+      }, 1500); // Show the message briefly before navigating
+
+    } catch (err) {
+      setGeneralFormError(err.message || 'Registration failed');
     }
-  };
+  } else {
+    setGeneralFormError('Please fill in all required fields correctly');
+  }
+};
 
   // State and Handlers for Login
   const [loginUsername, setLoginUsername] = useState('');
@@ -137,6 +145,21 @@ const RegistrationPage = ({ onRegistrationSuccess, onLoginSuccess }) => {
       setLoginError(err.message || 'Invalid email/phone or password');
     }
   };
+
+  {successMessage && (
+  <div style={{
+    marginTop: '1rem',
+    fontWeight: 'bold',
+    backgroundColor: '#e0ffe0',
+    padding: '10px',
+    borderRadius: '5px',
+    color: '#2e7d32',
+    textAlign: 'center'
+  }}>
+    🎉 Registration successful! <br /> <strong>Now you can login.</strong>
+  </div>
+)}
+
 
   return (
     <div className="figma-bg">
